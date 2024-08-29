@@ -1,12 +1,12 @@
 import "./style.css";
 
-import { LocaleType, Univer, UniverInstanceType } from "@univerjs/core";
+import { BooleanNumber, IPermissionService, LocaleType, SheetTypes, Univer, UniverInstanceType } from "@univerjs/core";
 import { defaultTheme } from "@univerjs/design";
 import { UniverDocsPlugin } from "@univerjs/docs";
 import { UniverDocsUIPlugin } from "@univerjs/docs-ui";
 import { UniverFormulaEnginePlugin } from "@univerjs/engine-formula";
 import { UniverRenderEnginePlugin } from "@univerjs/engine-render";
-import { UniverSheetsPlugin } from "@univerjs/sheets";
+import { RangeProtectionPermissionEditPoint, RangeProtectionPermissionViewPoint, UniverSheetsPlugin } from "@univerjs/sheets";
 import { UniverSheetsFormulaPlugin } from "@univerjs/sheets-formula";
 import { UniverSheetsUIPlugin } from "@univerjs/sheets-ui";
 import { UniverUIPlugin } from "@univerjs/ui";
@@ -41,104 +41,97 @@ univer.registerPlugin(UniverDocsPlugin, {
 });
 univer.registerPlugin(UniverDocsUIPlugin);
 
+
 univer.registerPlugin(UniverSheetsPlugin);
 univer.registerPlugin(UniverSheetsUIPlugin);
 univer.registerPlugin(UniverSheetsFormulaPlugin);
 
 // create univer sheet instance
 univer.createUnit(UniverInstanceType.UNIVER_SHEET, {
-  "id": "gyI0JO",
-  "sheetOrder": [
-      "RSfWjJFv4opmE1JaiRj80"
-  ],
-  "name": "",
-  "appVersion": "0.1.11",
-  "locale": "zhCN",
-  "styles": {},
-  "sheets": {
-      "RSfWjJFv4opmE1JaiRj80": {
-          "id": "RSfWjJFv4opmE1JaiRj80",
-          "name": "测试",
-          "tabColor": "",
-          "hidden": 0,
-          "rowCount": 30,
-          "columnCount": 10,
-          "zoomRatio": 1,
-          "freeze": {
-              "startRow": -1,
-              "startColumn": -1,
-              "ySplit": 0,
-              "xSplit": 0
-          },
-          "scrollTop": 0,
-          "scrollLeft": 0,
-          "defaultColumnWidth": 73,
-          "defaultRowHeight": 23,
-          "mergeData": [],
-          "cellData": {},
-          "rowData": {},
-          "columnData": {
-              "0": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "1": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "2": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "3": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "4": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "5": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "6": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "7": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "8": {
-                  "w": 125,
-                  "hd": 0
-              },
-              "9": {
-                  "w": 125,
-                  "hd": 0
-              }
-          },
-          "showGridlines": 1,
-          "rowHeader": {
-              "width": 46,
-              "hidden": 0
-          },
-          "columnHeader": {
-              "height": 20,
-              "hidden": 0
-          },
-          "selections": [
-              "A1"
-          ],
-          "rightToLeft": 0
-      }
-  },
-  "resources": [
-      {
-          "name": "SHEET_DEFINED_NAME_PLUGIN",
-          "data": ""
-      }
-  ]
+    id: 'Passagers_worksheet',
+    locale: LocaleType.EN_US,
+    name: 'Passagers_worksheet',
+    appVersion: '',
+    styles: {
+        'style_id_1': {
+        vt: 2, // Center alignment,
+        ht: 2 // Left alignment
+        },
+        'style_id_2': {
+        vt: 2, // Center alignment,
+        ht: 2, // Left alignment
+        n: {pattern: "yyyy/MM/dd"}
+        }
+    },
+    sheets: {
+        'Passagers_sheet': {
+        type: SheetTypes.GRID,
+        id: 'Passagers_sheet',
+        cellData: {
+            0: {
+                0: { v: "Try to Cut and paste me I will lose my value", s: "style_id_1" },
+            },
+            
+        },
+        
+        name: 'Passagers_sheet',
+        hidden: BooleanNumber.FALSE,
+        rowCount: 1000,
+        columnCount: 14,
+        tabColor: '',
+        zoomRatio: 1,
+        scrollTop: 0,
+        scrollLeft: 0,
+        freeze: {
+            xSplit: 1,
+            ySplit: 1,
+            startRow: 1,
+            startColumn: 0,
+        },
+        defaultColumnWidth: 120,
+        defaultRowHeight: 30,
+        status: 1,
+        showGridlines: 1,
+        hideRow: [],
+        hideColumn: [],
+        rowHeader: {
+            width: 46,
+            hidden: BooleanNumber.FALSE,
+        },
+        columnHeader: {
+            height: 20,
+            hidden: BooleanNumber.FALSE,
+        },
+        rightToLeft: BooleanNumber.FALSE,
+        }
+    },
+    resources: [
+        
+        {
+            name: 'SHEET_RANGE_PROTECTION_PLUGIN',
+            data: JSON.stringify({
+            "Passagers_sheet":[
+                {name:"Protection(cellules à ne pas toucher)", unitId:"Passagers_worksheet",subUnitId:"Passagers_sheet",permissionId:"zfhyvc141ujte",unitType:3,id:"TrB1",ranges: [{startRow:0,startColumn:0,endRow:0,endColumn:0,rangeType:0}],description:"Ne pas toucher !"},
+            ]
+            }),
+        }
+    ]
+    
+    
 }
+
 );
+setTimeout(() => {
+    let injector = univer.__getInjector();
+    let permissionService = injector.get(IPermissionService);
+    
+    // I'm trying to let my user view but not edit this sheet 
+    permissionService.updatePermissionPoint(
+      new RangeProtectionPermissionEditPoint("Passagers_worksheet","Passagers_sheet","zfhyvc141ujte").id,
+      false
+    );
+    permissionService.updatePermissionPoint(
+        new RangeProtectionPermissionViewPoint("Passagers_worksheet","Passagers_sheet","zfhyvc141ujte").id,
+        true
+    );
+}, 1000);
